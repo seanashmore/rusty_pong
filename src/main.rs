@@ -134,7 +134,7 @@ fn main() {
 			}
 
 			if key == Key::Up {
-				if p2Rect.y > 10.0 {
+				if p2Rect.y > GEN_PADDING {
 					p2Rect.y = p2Rect.y - PLAYER_SPEED_Y;
 				}
 			}	

@@ -5,10 +5,10 @@ static WINDOW_HEIGHT: f64 = 480.0;
 static WINDOW_WIDTH: f64 = 640.0;
 
 static PLAYER_HEIGHT: f64 = 100.0;
-static PLAYER_WIDTH: f64 = 40.0;
+static PLAYER_WIDTH: f64 = 20.0;
 
 static BALL_DIMEN: f64 = 25.0;
-static BALL_SPEED: f64 = 1.0;
+static BALL_SPEED: f64 = 0.6;
 
 static PLAYER_SPEED_Y: f64 = 40.0;
 

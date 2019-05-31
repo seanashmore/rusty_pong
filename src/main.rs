@@ -26,7 +26,6 @@ static TEXT_SIZE: u32 = 12;
 fn main() {
 	let mut ball_speed_x = 0.0;
 	let mut ball_speed_y = 0.0;
-
 	let mut serve_direction = 1.0;
 
     let mut window: PistonWindow = WindowSettings::new("Rusty Pong", [WINDOW_WIDTH as u32, WINDOW_HEIGHT as u32]).exit_on_esc(true).build().unwrap();
@@ -87,7 +86,7 @@ fn main() {
 		ballRect.y += ball_speed_y;
 
 		if ballRect.x < 0.0 || ballRect.x + BALL_DIMEN > WINDOW_WIDTH {
-			serve_direction = serve_direction * -1.0;
+			serve_direction = reverse(serve_direction);
 
 			if serve_direction < 0.0 {
 				p1Score = p1Score + 1;
@@ -102,40 +101,26 @@ fn main() {
 		}
 
 		if ballRect.y + BALL_DIMEN >= WINDOW_HEIGHT || ballRect.y <= 0.0 {
-			ball_speed_y = ball_speed_y * -1.0;
+			ball_speed_y = reverse(ball_speed_y);
 		}
 
-		//Collision: ball & p1
-		if ballRect.x < p1Rect.x + p1Rect.width &&
-    		ballRect.x + ballRect.width > p1Rect.x &&
-    		ballRect.y < p1Rect.y + p1Rect.height &&
-    		ballRect.y + ballRect.height > p1Rect.y {
-			println!("Collision");
-			ball_speed_x = ball_speed_x * -1.0;
-		}	
+		if hasCollided(&ballRect, &p1Rect) {
+			ball_speed_x = reverse(ball_speed_x);		
+		}
 
-		//collision: ball & p2
-		if ballRect.x < p2Rect.x + p2Rect.width &&
-    		ballRect.x + ballRect.width > p2Rect.x &&
-    		ballRect.y < p2Rect.y + p2Rect.height &&
-    		ballRect.y + ballRect.height > p2Rect.y {
-			println!("Collision");
-			ball_speed_x = ball_speed_x * -1.0;
-		}		
+		if hasCollided(&ballRect, &p2Rect) {
+			ball_speed_x = reverse(ball_speed_x);	
+		}
 
 		if let Some(Button::Keyboard(key)) = event.press_args() {
 			//Player 1 input
 			if key == Key::S {
-				println!("Pressed S (Down)");
-
 				if p1Rect.y + p1Rect.height < WINDOW_HEIGHT - GEN_PADDING {
 					p1Rect.y = p1Rect.y + PLAYER_SPEED_Y;
 				}
 			}
 
 			if key == Key::W {
-				println!("Pressed W (Up)");
-
 				if p1Rect.y > GEN_PADDING {
 					p1Rect.y = p1Rect.y - PLAYER_SPEED_Y;
 				}
@@ -143,16 +128,12 @@ fn main() {
 
 			//Player 2 input
 			if key == Key::Down {
-				println!("Pressed Down");
-
 				if p2Rect.y + p2Rect.height < WINDOW_HEIGHT - GEN_PADDING {
 					p2Rect.y = p2Rect.y + PLAYER_SPEED_Y;
 				}
 			}
 
 			if key == Key::Up {
-				println!("Pressed Up");
-
 				if p2Rect.y > 10.0 {
 					p2Rect.y = p2Rect.y - PLAYER_SPEED_Y;
 				}
@@ -160,7 +141,6 @@ fn main() {
 
 			//Ball start
 			if key == Key::Space {
-				println!("Pressed space");
 				if ball_speed_x == 0.0 {
 					if serve_direction > 0.0 {
 						ball_speed_x = BALL_SPEED;
@@ -172,6 +152,17 @@ fn main() {
 			}		
 		}
     }
+}
+
+fn hasCollided(rect1: &Rectangle, rect2: &Rectangle) -> bool {
+	return rect1.x < rect2.x + rect2.width &&
+		rect1.x + rect1.width > rect2.x &&
+		rect1.y < rect2.y + rect2.height &&
+		rect1.y + rect1.height > rect2.y; 
+}
+
+fn reverse(speed: f64) -> f64 {
+	return speed * -1.0;
 }
 
 struct Rectangle {

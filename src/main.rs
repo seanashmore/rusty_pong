@@ -36,7 +36,7 @@ fn main() {
 
     while let Some(event) = window.next() {
         window.draw_2d(&event, |context, graphics| {
-            clear([1.0; 4], graphics);
+            clear([0.0; 4], graphics);
 
 			//Player 1 (lhs)
             rectangle([1.0, 0.0, 0.0, 1.0], // red

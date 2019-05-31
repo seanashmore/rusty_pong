@@ -10,7 +10,7 @@ static PLAYER_WIDTH: f64 = 40.0;
 static BALL_DIMEN: f64 = 25.0;
 static BALL_SPEED: f64 = 1.0;
 
-static PLAYER_SPEED_Y: f64 = 20.0;
+static PLAYER_SPEED_Y: f64 = 40.0;
 
 static BALL_START_X: f64 = WINDOW_WIDTH / 2.0 - (BALL_DIMEN / 2.0);
 static BALL_START_Y: f64 = WINDOW_HEIGHT / 2.0 - (BALL_DIMEN / 2.0);
@@ -29,7 +29,6 @@ fn main() {
 	let mut p2Rect: Rectangle = Rectangle{x: WINDOW_WIDTH - PLAYER_WIDTH - GEN_PADDING, y: GEN_PADDING, width: PLAYER_WIDTH, height: PLAYER_HEIGHT};
 	let mut ballRect: Rectangle = Rectangle{x: BALL_START_X, y: BALL_START_Y, width: BALL_DIMEN, height: BALL_DIMEN};
 
-
     while let Some(event) = window.next() {
         window.draw_2d(&event, |context, graphics| {
             clear([0.0; 4], graphics);
@@ -40,7 +39,7 @@ fn main() {
                       context.transform,
                       graphics);
 
-			//Player 1 (lhs)
+			//Player 2 (rhs)
             rectangle([0.0, 0.0, 1.0, 1.0], // blue
                       [p2Rect.x, p2Rect.y, p2Rect.width, p2Rect.height],
                       context.transform,
@@ -55,7 +54,7 @@ fn main() {
 		ballRect.x += ball_speed_x;
 		ballRect.y += ball_speed_y;
 
-		if ballRect.x < 0.0 || ballRect.x + BALL_DIMEN > WINDOW_HEIGHT {
+		if ballRect.x < 0.0 || ballRect.x + BALL_DIMEN > WINDOW_WIDTH {
 			serve_direction = serve_direction * -1.0;
 			ballRect.x = BALL_START_X;
 			ballRect.y = BALL_START_Y;
@@ -66,6 +65,24 @@ fn main() {
 		if ballRect.y + BALL_DIMEN >= WINDOW_HEIGHT || ballRect.y <= 0.0 {
 			ball_speed_y = ball_speed_y * -1.0;
 		}
+
+		//Collision: ball & p1
+		if ballRect.x < p1Rect.x + p1Rect.width &&
+    		ballRect.x + ballRect.width > p1Rect.x &&
+    		ballRect.y < p1Rect.y + p1Rect.height &&
+    		ballRect.y + ballRect.height > p1Rect.y {
+			println!("Collision");
+			ball_speed_x = ball_speed_x * -1.0;
+		}	
+
+		//collision: ball & p2
+		if ballRect.x < p2Rect.x + p2Rect.width &&
+    		ballRect.x + ballRect.width > p2Rect.x &&
+    		ballRect.y < p2Rect.y + p2Rect.height &&
+    		ballRect.y + ballRect.height > p2Rect.y {
+			println!("Collision");
+			ball_speed_x = ball_speed_x * -1.0;
+		}		
 
 		if let Some(Button::Keyboard(key)) = event.press_args() {
 			//Player 1 input

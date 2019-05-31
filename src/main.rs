@@ -1,5 +1,6 @@
 use piston_window::*;
 use input::{RenderEvent, UpdateEvent};
+extern crate find_folder;
 
 static WINDOW_HEIGHT: f64 = 480.0;
 static WINDOW_WIDTH: f64 = 640.0;
@@ -17,6 +18,11 @@ static BALL_START_Y: f64 = WINDOW_HEIGHT / 2.0 - (BALL_DIMEN / 2.0);
 
 static GEN_PADDING: f64 = 10.0;
 
+static TEXT_P1_SCORE_X: f64 = (WINDOW_WIDTH / 4.0);
+static TEXT_P2_SCORE_X: f64 = (WINDOW_WIDTH / 4.0) * 3.0;
+static TEXT_PADDING_Y: f64 = 20.0;
+static TEXT_SIZE: u32 = 12;
+
 fn main() {
 	let mut ball_speed_x = 0.0;
 	let mut ball_speed_y = 0.0;
@@ -28,6 +34,16 @@ fn main() {
 	let mut p1Rect: Rectangle = Rectangle{x: GEN_PADDING, y: GEN_PADDING, width: PLAYER_WIDTH, height: PLAYER_HEIGHT};
 	let mut p2Rect: Rectangle = Rectangle{x: WINDOW_WIDTH - PLAYER_WIDTH - GEN_PADDING, y: GEN_PADDING, width: PLAYER_WIDTH, height: PLAYER_HEIGHT};
 	let mut ballRect: Rectangle = Rectangle{x: BALL_START_X, y: BALL_START_Y, width: BALL_DIMEN, height: BALL_DIMEN};
+
+	let mut p1Score = 0;
+	let mut p2Score = 0;
+
+	let assets = find_folder::Search::ParentsThenKids(3,3)
+	.for_folder("assets").unwrap();
+	let ref font = assets.join("8bit.ttf");
+	let factory = window.factory.clone();
+	let texture_settings = TextureSettings::new();
+	let mut glyphs = Glyphs::new(font, factory, texture_settings).unwrap();
 
     while let Some(event) = window.next() {
         window.draw_2d(&event, |context, graphics| {
@@ -48,7 +64,23 @@ fn main() {
 			rectangle([0.0, 1.0, 0.0, 1.0], //Green
 					  [ballRect.x, ballRect.y, ballRect.width, ballRect.height],
 					  context.transform,
-					  graphics); 	 		  
+					  graphics); 	
+
+			let transform = context.transform.trans(TEXT_P1_SCORE_X, TEXT_PADDING_Y);
+			text::Text::new_color([1.0, 1.0, 1.0, 1.0], TEXT_SIZE).draw(
+				&p1Score.to_string(),
+				&mut glyphs,
+				&context.draw_state,
+				transform, graphics
+			);
+
+			let transform = context.transform.trans(TEXT_P2_SCORE_X, TEXT_PADDING_Y);
+			text::Text::new_color([1.0, 1.0, 1.0, 1.0], TEXT_SIZE).draw(
+				&p2Score.to_string(),
+				&mut glyphs,
+				&context.draw_state,
+				transform, graphics
+			);			 		  
         });
 
 		ballRect.x += ball_speed_x;
@@ -56,6 +88,13 @@ fn main() {
 
 		if ballRect.x < 0.0 || ballRect.x + BALL_DIMEN > WINDOW_WIDTH {
 			serve_direction = serve_direction * -1.0;
+
+			if serve_direction < 0.0 {
+				p1Score = p1Score + 1;
+			} else {
+				p2Score = p2Score + 1;
+			}
+
 			ballRect.x = BALL_START_X;
 			ballRect.y = BALL_START_Y;
 			ball_speed_x = 0.0;

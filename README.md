@@ -8,8 +8,8 @@ cargo install
 
 ## Usage
 
-Build: cargo build
-Quick build & Run: cargo run
+Build: cargo build  
+Quick build & Run: cargo run  
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)

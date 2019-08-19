@@ -11,5 +11,10 @@ cargo install
 Build: cargo build  
 Quick build & Run: cargo run  
 
+##Controls\n\n
+
+Player 1: WASD\n\n
+Player 2: Directional arrow keys\n\n
+
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)

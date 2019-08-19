@@ -14,7 +14,7 @@ Quick build & Run: cargo run
 ##Controls
 
 Player 1: WASD  
-Player 2: Directional arrow keys 
+Player 2: Directional arrow keys  
 Space Bar to start the game 
 
 ## License
